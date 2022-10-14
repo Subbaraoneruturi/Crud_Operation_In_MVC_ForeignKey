@@ -12,7 +12,7 @@ namespace Crud_Operation_In_MVC_ForeignKey.Controllers
         TutorialsCS _context = new TutorialsCS();
         public ActionResult Index()
         {
-            var listofData = _context.Employees.ToList();
+            var listofData = _context.Employees.ToList();          
             return View(listofData);
         }
 
@@ -21,6 +21,24 @@ namespace Crud_Operation_In_MVC_ForeignKey.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            List<Department> deptList = _context.Departments.ToList();
+            List<SelectListItem> selectList = new List<SelectListItem>();
+          
+            foreach (var dept in deptList)
+            {
+                SelectListItem sl = new SelectListItem();
+                sl.Value = Convert.ToString(dept.DeptId);
+                sl.Text = dept.DeptName;
+                selectList.Add(sl);
+            }
+
+            SelectListItem samplesl = new SelectListItem();
+            samplesl.Value = "0";
+            samplesl.Text = "Please select department";
+            samplesl.Selected = true;
+            selectList.Add(samplesl);
+
+            ViewBag.deptList = selectList;
             return View();
         }
 
@@ -29,48 +47,9 @@ namespace Crud_Operation_In_MVC_ForeignKey.Controllers
         {
             _context.Employees.Add(model);
             _context.SaveChanges();
-            var listofData = _context.Employees.ToList();
             ViewBag.Message = "Data Insert Successfully";
-            return View("Index", listofData);
+            return RedirectToAction("Index");
         }
-
-        [HttpGet]
-        public ActionResult Edit(int id)
-        {
-            var data = _context.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
-            return View(data);
-        }
-        [HttpPost]
-        public ActionResult Edit(Employee Model)
-        {
-            var data = _context.Employees.Where(x => x.EmployeeId == Model.EmployeeId).FirstOrDefault();
-            if (data != null)
-            {
-                data.EmployeeCity = Model.EmployeeCity;
-                data.EmployeeName = Model.EmployeeName;
-                data.EmployeeSalary = Model.EmployeeSalary;
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction("index");
-        }
-
-        public ActionResult Delete(int id)
-        {
-            var data = _context.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
-            _context.Employees.Remove(data);
-            _context.SaveChanges();
-            ViewBag.Messsage = "Record Delete Successfully";
-            return RedirectToAction("index");
-        }
-
-        public ActionResult Details(int id)
-        {
-            var data = _context.Employees.Where(x => x.EmployeeId == id).FirstOrDefault();
-            return View(data);
-        }
-
-
 
     }
 }

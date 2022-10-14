@@ -17,7 +17,10 @@ namespace Crud_Operation_In_MVC_ForeignKey.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet] // we have five httpverbs (Httpget -- to get data by default any method which not having any decaration it will be get,
+                  // httppost to post a new record into table etc,
+                  // httpput to update a existing record fully, httppatch to update an existing record partially,
+                  // httpdelete to delete an existing record from database table)
         public ActionResult Create()
         {
             return View();
@@ -28,9 +31,10 @@ namespace Crud_Operation_In_MVC_ForeignKey.Controllers
         {
             _context.Departments.Add(model);
             _context.SaveChanges();
-            var listofData = _context.Departments.ToList();
-            ViewBag.Message = "Data Insert Successfully";
-            return View("Index", listofData);
+            //var listofData = _context.Departments.ToList();
+            //ViewBag.Message = "Data Insert Successfully";
+            //return View("Index", listofData);
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -53,9 +57,10 @@ namespace Crud_Operation_In_MVC_ForeignKey.Controllers
             return RedirectToAction("index");
         }
 
+        [HttpDelete]
         public ActionResult Delete(int id)
         {
-            var data = _context.Departments.Where(x => x.DeptId == id).FirstOrDefault();
+            var data = _context.Departments.Where(x => x.DeptId == id).FirstOrDefault(); // Linq 
             _context.Departments.Remove(data);
             _context.SaveChanges();
             ViewBag.Messsage = "Record Delete Successfully";
